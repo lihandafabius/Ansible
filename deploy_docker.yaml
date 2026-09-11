@@ -1,0 +1,43 @@
+---
+- name: Install Docker
+  hosts: docker_server
+  become: yes
+  tasks:
+    - name: Install Docker
+      yum:
+        name: docker
+        update_cache: yes
+        state: present
+    - name: Start Docker daemon
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+- name: Install Docker Compose
+  hosts: docker_server
+  tasks:
+    - name: Create Docker Compose directory
+      file:
+        path: ~/.docker/cli-plugins
+        state: directory
+    - name: Get architecture of remote host
+      shell: uname -m
+      register: architecture
+    - name: Download Docker Compose
+      get_url:
+        url: "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-{{ architecture.stdout }}"
+        dest: ~/.docker/cli-plugins/docker-compose
+        mode: +x # Make the file executable
+
+- name: Add ec2-user to docker group
+  hosts: docker_server
+  become: yes
+  tasks:
+    - name: Add ec2-user to docker group
+      user: # allows to create a new user or modify an existing user
+        name: ec2-user
+        groups: docker
+        append: yes 
+    - name: Reconnect to apply group changes
+      meta: reset_connection  
