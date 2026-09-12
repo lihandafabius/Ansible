@@ -1,6 +1,15 @@
 ---
-- name: Install Docker
-  hosts: docker_server
+- name: Wait for host to be reachable
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Wait for SSH to come up
+      wait_for_connection:
+        delay: 5 # Wait for 5 seconds before starting to check
+        timeout: 120 # Wait for 2 minutes for the host to be reachable
+
+- name: Install Docker and acl package
+  hosts: all
   become: yes
   tasks:
     - name: Install Docker
@@ -13,9 +22,13 @@
         name: docker
         state: started
         enabled: yes
+    - name: Install acl package
+      yum:
+        name: acl
+        state: present
 
 - name: Create new linux user
-  hosts: docker_server
+  hosts: all
   become: yes
   tasks:
     - name: Create new linux user
@@ -24,7 +37,7 @@
         groups: adm, docker
 
 - name: Install Docker Compose
-  hosts: docker_server
+  hosts: all
   become: yes
   become_user: fabi
   tasks:
@@ -42,25 +55,28 @@
         mode: +x # Make the file executable
 
 - name: Start docker containers
-  hosts: docker_server
+  hosts: all
   become: yes
   become_user: fabi
-  vars_prompt:
-    - name: docker_username
-      prompt: "Enter your Docker Hub username"
-      private: no
-    - name: docker_password
-      prompt: "Enter your Docker Hub password"
-      private: yes
+  vars_files:
+    - project-vars
+
+  # This won't work because the docker login task requires user input for the username and password and we are not in interactive mode (Running in terminal). You can either provide these values in a secure way (e.g., using Ansible Vault) or use a different method to authenticate with Docker Hub.
+  # vars_prompt:
+  #   - name: docker_username
+  #     prompt: "Enter your Docker Hub username"
+  #     private: no
+  #   - name: docker_password
+  #     prompt: "Enter your Docker Hub password"
+  #     private: yes
   tasks:
     - name: Copy docker-compose.yml to remote host
       copy:
         src: /home/fabius-lihanda/Devops/Devops_Nana-Techworld_Bootcamp/developing-with-docker/docker-compose.yaml
         dest: /home/fabi/docker-compose.yml
     - name: Docker login
-      docker_login:
-        username: "{{ docker_username }}"
-        password: "{{ docker_password }}"
+      shell: echo "{{ docker_password }}" | docker login -u "{{ docker_username }}" --password-stdin
+      no_log: true
     - name: Start Docker containers
       community.docker.docker_compose_v2:
         project_src: /home/fabi
