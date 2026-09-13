@@ -1,1 +1,245 @@
 hosts
+project-vars
+
+# ============================================================
+
+# Ansible
+
+# ============================================================
+
+# Inventory files containing real hosts/IPs
+
+inventory/hosts
+inventory/hosts.ini
+inventory/hosts.yml
+inventory/hosts.yaml
+inventory/inventory.ini
+inventory/inventory.yml
+inventory/inventory.yaml
+
+# Dynamic inventory cache
+
+*.retry
+.retry/
+.cache/
+ansible_inventory_cache/
+inventory_aws_ec2.cache
+
+# Ansible Vault password files
+
+.vault_pass
+vault_pass
+vault_pass.txt
+.vault-password
+.vault-password-file
+
+# Ansible temporary / generated files
+
+*.retry
+*.log
+
+# ============================================================
+
+# Secrets and Credentials
+
+# ============================================================
+
+# Environment files
+
+.env
+.env.*
+!.env.example
+
+# Secret/config files
+
+secrets.yml
+secrets.yaml
+secret.yml
+secret.yaml
+credentials.yml
+credentials.yaml
+credentials.ini
+credentials.json
+
+# Local variable files that may contain secrets
+
+vars/secrets.yml
+vars/secrets.yaml
+group_vars/*/secrets.yml
+group_vars/*/secrets.yaml
+host_vars/*/secrets.yml
+host_vars/*/secrets.yaml
+
+# ============================================================
+
+# SSH / TLS Keys
+
+# ============================================================
+
+# Private keys
+
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# OpenSSH private keys
+
+id_rsa
+id_ecdsa
+id_ed25519
+id_dsa
+
+# SSH certificates / temporary files
+
+*.pub
+*.crt
+*.csr
+
+# ============================================================
+
+# Terraform
+
+# ============================================================
+
+# Terraform state can contain sensitive information
+
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Terraform variable files
+
+*.tfvars
+*.tfvars.json
+
+# Keep an example variable file
+
+!terraform.tfvars.example
+
+# ============================================================
+
+# Python
+
+# ============================================================
+
+# Virtual environments
+
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache
+
+**pycache**/
+*.py[cod]
+*$py.class
+
+# Python test/coverage files
+
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# ============================================================
+
+# Editors / IDEs
+
+# ============================================================
+
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ============================================================
+
+# OS Files
+
+# ============================================================
+
+.DS_Store
+Thumbs.db
+
+# ============================================================
+
+# Logs
+
+# ============================================================
+
+*.log
+logs/
+
+# ============================================================
+
+# Generated / Temporary Files
+
+# ============================================================
+
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+
+# ============================================================
+
+# Local Ansible Configuration
+
+# ============================================================
+
+# Ignore local ansible.cfg if it contains local paths,
+
+# credentials, or environment-specific configuration.
+
+ansible.cfg
+
+# ============================================================
+
+# Local AWS Files
+
+# ============================================================
+
+.aws/
+aws_credentials
+credentials
+
+# ============================================================
+
+# Nexus / Application Generated Data
+
+# ============================================================
+
+# Local application data
+
+*.db
+*.sqlite
+*.sqlite3
+
+# Generated archives
+
+*.tar
+*.tar.gz
+*.zip
+
+# ============================================================
+
+# Keep safe examples/templates
+
+# ============================================================
+
+!.env.example
+!*.example
+!*.sample
+!templates/
+!roles/
+!playbooks/
+
