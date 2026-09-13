@@ -1,6 +1,6 @@
 ---
 - name: Wait for host to be reachable
-  hosts: all
+  hosts: tag_Name_dev_instance
   gather_facts: no
   tasks:
     - name: Wait for SSH to come up
@@ -9,7 +9,7 @@
         timeout: 120 # Wait for 2 minutes for the host to be reachable
 
 - name: Install Docker and acl package
-  hosts: all
+  hosts: tag_Name_dev_instance
   become: yes
   tasks:
     - name: Install Docker
@@ -28,7 +28,7 @@
         state: present
 
 - name: Create new linux user
-  hosts: all
+  hosts: tag_Name_dev_instance
   become: yes
   tasks:
     - name: Create new linux user
@@ -37,7 +37,7 @@
         groups: adm, docker
 
 - name: Install Docker Compose
-  hosts: all
+  hosts: tag_Name_dev_instance
   become: yes
   become_user: fabi
   tasks:
@@ -55,7 +55,7 @@
         mode: +x # Make the file executable
 
 - name: Start docker containers
-  hosts: all
+  hosts: tag_Name_dev_instance
   become: yes
   become_user: fabi
   vars_files:
