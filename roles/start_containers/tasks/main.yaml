@@ -1,0 +1,13 @@
+- name: Copy docker-compose.yml to remote host
+  copy:
+    src: docker-compose.yaml
+    dest: /home/fabi/docker-compose.yml
+
+- name: Docker login
+  shell: echo "{{ docker_password }}" | docker login -u "{{ docker_username }}" --password-stdin
+  no_log: true
+
+- name: Start Docker containers
+  community.docker.docker_compose_v2:
+    project_src: /home/fabi
+        

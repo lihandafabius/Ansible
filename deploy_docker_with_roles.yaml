@@ -1,0 +1,65 @@
+---
+- name: Wait for host to be reachable
+  hosts: tag_Name_dev_server
+  gather_facts: no
+  tasks:
+    - name: Wait for SSH to come up
+      wait_for_connection:
+        delay: 5 # Wait for 5 seconds before starting to check
+        timeout: 120 # Wait for 2 minutes for the host to be reachable
+
+- name: Install Docker and acl package
+  hosts: tag_Name_dev_server
+  become: yes
+  tasks:
+    - name: Install Docker
+      yum:
+        name: docker
+        update_cache: yes
+        state: present
+    - name: Start Docker daemon
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+    - name: Install acl package
+      yum:
+        name: acl
+        state: present
+
+- name: Create new linux user
+  hosts: tag_Name_dev_server
+  become: yes
+  vars:
+    user_groups: adm, docker
+  roles:
+    - create_user
+
+
+- name: Install Docker Compose
+  hosts: tag_Name_dev_server
+  become: yes
+  become_user: fabi
+  tasks:
+    - name: Create Docker Compose directory
+      file:
+        path: ~/.docker/cli-plugins
+        state: directory
+    - name: Get architecture of remote host
+      shell: uname -m
+      register: architecture
+    - name: Download Docker Compose
+      get_url:
+        url: "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-{{ architecture.stdout }}"
+        dest: ~/.docker/cli-plugins/docker-compose
+        mode: +x # Make the file executable
+
+- name: Start docker containers
+  hosts: tag_Name_dev_server
+  become: yes
+  become_user: fabi
+  vars_files:
+    - project-vars
+  roles:
+    - start_containers
+
